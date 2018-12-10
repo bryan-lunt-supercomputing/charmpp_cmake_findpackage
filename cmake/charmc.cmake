@@ -45,7 +45,6 @@ function(set_charm_target target_name)
 		list(APPEND TMP_NON_CHARM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/${SINGLE_CHARM_DEFAULT_OUTPUT}.def.h")
 		include_directories(${target_name} ${CMAKE_CURRENT_BINARY_DIR})
 
-		#this will rebuild the files each time for each target, even if multiple targets use the same output.
 		#If we use an OUTPUT type custom_command, and alter the target's sources list, we might avoid that.
 		#message("one_charm_source : " ${CMAKE_CURRENT_SOURCE_DIR}/${one_charm_source} )
 		set(SET_CHARM_TARGET_SINGLE_CHARM_SOURCE_FULL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${one_charm_source})

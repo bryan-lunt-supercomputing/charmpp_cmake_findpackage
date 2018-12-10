@@ -16,7 +16,7 @@ set(CMAKE_MODULE_PATH
 find_package(Charm)
 if(CHARM_FOUND)
         message("Charm found: ${CHARM_COMPILER}")
-		include("charmc")
+		#include("charmc")
 else()
         message(FATAL_ERROR "Charm not found!")
 endif()
