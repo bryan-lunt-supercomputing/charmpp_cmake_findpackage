@@ -1,4 +1,3 @@
-include("allprops")
 
 function(set_charm_target target_name)
 	set(options )
@@ -30,19 +29,40 @@ function(set_charm_target target_name)
 		list(REMOVE_ITEM ALL_SOURCES_PATHS ${one_charm_source})
 	endforeach(one_charm_source)
 
-	set_target_properties(${target_name} PROPERTIES SOURCES "${TMP_NON_CHARM_SOURCES}" SCOPE PARENT_SCOPE)
+	#set_target_properties(${target_name} PROPERTIES SOURCES "${TMP_NON_CHARM_SOURCES}" SCOPE PARENT_SCOPE)
 	#TODO: append to if the charm sources property already exists
-	set_target_properties(${target_name} PROPERTIES "CHARM_SOURCES" "${TMP_CHARM_SOURCES}" SCOPE PARENT_SCOPE)
+	#set_target_properties(${target_name} PROPERTIES "CHARM_SOURCES" "${TMP_CHARM_SOURCES}" SCOPE PARENT_SCOPE)
 
 	#message("all charm sources : " "${TMP_CHARM_SOURCES}")
 	#message("all non-charm sources : " "${TMP_NON_CHARM_SOURCES}")
 
-	#this will rebuild the files each time for each target, even if multiple targets use the same output.
-	#If we use an OUTPUT type custom_command, and alter the target's sources list, we might avoid that.
-	add_custom_command(TARGET ${target_name}
-		PRE_BUILD
-		COMMAND "echo" ${CHARM_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/${TMP_CHARM_SOURCES}
-	)
+	message("THE CHARMXI COMPILER IS " ${CHARMXI_COMPILER})
+
+	foreach(one_charm_source ${TMP_CHARM_SOURCES})
+		get_filename_component(SINGLE_CHARM_DEFAULT_OUTPUT ${one_charm_source} NAME)
+		string(REGEX REPLACE "\\.ci$" "" SINGLE_CHARM_DEFAULT_OUTPUT ${SINGLE_CHARM_DEFAULT_OUTPUT})
+		list(APPEND TMP_NON_CHARM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/${SINGLE_CHARM_DEFAULT_OUTPUT}.decl.h")
+		list(APPEND TMP_NON_CHARM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/${SINGLE_CHARM_DEFAULT_OUTPUT}.def.h")
+		include_directories(${target_name} ${CMAKE_CURRENT_BINARY_DIR})
+
+		#this will rebuild the files each time for each target, even if multiple targets use the same output.
+		#If we use an OUTPUT type custom_command, and alter the target's sources list, we might avoid that.
+		#message("one_charm_source : " ${CMAKE_CURRENT_SOURCE_DIR}/${one_charm_source} )
+		set(SET_CHARM_TARGET_SINGLE_CHARM_SOURCE_FULL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${one_charm_source})
+		#add_custom_command(TARGET ${target_name}
+		add_custom_command(
+			PRE_BUILD
+			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${SINGLE_CHARM_DEFAULT_OUTPUT}.decl.h ${CMAKE_CURRENT_BINARY_DIR}/${SINGLE_CHARM_DEFAULT_OUTPUT}.def.h
+			COMMAND ${CHARMXI_COMPILER} ${SET_CHARM_TARGET_SINGLE_CHARM_SOURCE_FULL_PATH}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+			DEPENDS ${SET_CHARM_TARGET_SINGLE_CHARM_SOURCE_FULL_PATH}
+			VERBATIM
+		)
+	endforeach()
+
+	set_target_properties(${target_name} PROPERTIES SOURCES "${TMP_NON_CHARM_SOURCES}" SCOPE PARENT_SCOPE)
+	#TODO: append to if the charm sources property already exists
+	set_target_properties(${target_name} PROPERTIES "CHARM_SOURCES" "${TMP_CHARM_SOURCES}" SCOPE PARENT_SCOPE)
 
 
 endfunction()

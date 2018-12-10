@@ -24,8 +24,7 @@ endif()
 add_executable(foobar "src/main.C" "src/main.h" "src/main.ci")
 set_charm_target(foobar)
 
-include("allprops")
-print_target_properties(foobar)
-
-get_target_property(BLAH foobar CHARM_SOURCES)
-message("CHARM_SOURCES " ${BLAH})
+#include("allprops")
+#print_target_properties(foobar)
+#get_target_property(BLAH foobar CHARM_SOURCES)
+#message("CHARM_SOURCES " ${BLAH})
