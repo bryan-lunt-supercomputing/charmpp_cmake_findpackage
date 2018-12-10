@@ -16,13 +16,13 @@ find_program(CHARM_COMPILER
 )
 mark_as_advanced(CHARM_COMPILER)
 
+#Get the version
 if(CHARM_COMPILER)
 execute_process(COMMAND ${CHARM_COMPILER} -V
 				OUTPUT_VARIABLE charmc_version
 				ERROR_QUIET
 				OUTPUT_STRIP_TRAILING_WHITESPACE
 			)
-
 if(charmc_version MATCHES "^Charm\\+\\+ Version [0-9.]+")
 	string(REGEX REPLACE "Charm\\+\\+ Version ([0-9.]+).*" "\\1" CHARM_VERSION_STRING "${charmc_version}")
 endif()
@@ -38,6 +38,15 @@ find_program(CHARMXI_COMPILER
 	DOC "Charm++ module compiler"
 )
 mark_as_advanced(CHARMXI_COMPILER)
+
+#Get all options linking, etc.
+if(CHARM_COMPILER)
+execute_process(COMMAND ${CHARM_COMPILER} -print-building-blocks
+				OUTPUT_VARIABLE charmc_all_variables
+				ERROR_QUIET
+				OUTPUT_STRIP_TRAILING_WHITESPACE
+			)
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Charm

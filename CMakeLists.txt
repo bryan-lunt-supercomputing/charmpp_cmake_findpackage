@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(CharmHello VERSION 1.0 LANGUAGES C CXX)
+project(CharmHello LANGUAGES C CXX)
 
 # Location of additional cmake modules
 #
@@ -8,9 +8,24 @@ set(CMAKE_MODULE_PATH
 	${PROJECT_SOURCE_DIR}/cmake
 	)
 
+#	define_property(TARGET PROPERTY "CHARM_SOURCES"
+#	BRIEF_DOCS "Sources for charmxi"
+#	FULL_DOCS  "List of source files that the charm module compiler should interpret."
+#	)
+
 find_package(Charm)
 if(CHARM_FOUND)
         message("Charm found: ${CHARM_COMPILER}")
+		include("charmc")
 else()
         message(FATAL_ERROR "Charm not found!")
 endif()
+
+add_executable(foobar "src/main.C" "src/main.h" "src/main.ci")
+set_charm_target(foobar)
+
+include("allprops")
+print_target_properties(foobar)
+
+get_target_property(BLAH foobar CHARM_SOURCES)
+message("CHARM_SOURCES " ${BLAH})
