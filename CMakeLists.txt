@@ -17,12 +17,21 @@ find_package(Charm)
 if(CHARM_FOUND)
         message("Charm found: ${CHARM_COMPILER}")
 		#include("charmc")
+		#set(CMAKE_C_COMPILER "${CHARM_COMPILER}")
+		#set(CMAKE_CXX_COMPILER "${CHARM_COMPILER}")
+		#set(CMAKE_C_FLAGS "-O3 -language charm++")
+		#set(CMAKE_CXX_FLAGS "-O3 -language charm++")
+
+
 else()
         message(FATAL_ERROR "Charm not found!")
 endif()
 
 add_executable(foobar "src/main.C" "src/main.h" "src/main.ci")
 set_charm_target(foobar)
+
+add_executable(foobar2 "src/main.C" "src/main.h" "src/main.ci")
+set_charm_target(foobar2)
 
 #include("allprops")
 #print_target_properties(foobar)
