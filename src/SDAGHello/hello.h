@@ -3,6 +3,7 @@
 
 
 class Hello : public CBase_Hello {
+	Hello_SDAG_CODE
 private:
 	int size;
 	int p;
@@ -16,7 +17,8 @@ private:
   Hello(CkMigrateMessage *msg);
 
   /// Entry Methods ///
-  void receive(int from, int sender_phase, int direction);
+  //void receive(int from, int sender_phase, int direction);
+  void receive_impl(int from, int sender_phase, int direction);
   void new_phase( void );
 };
 

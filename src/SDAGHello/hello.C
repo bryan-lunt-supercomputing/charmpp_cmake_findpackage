@@ -26,7 +26,7 @@ Hello::Hello(int in_size, int in_phases) {
 Hello::Hello(CkMigrateMessage *msg) { }
 
 
-void Hello ::receive(int from, int sender_phase, int direction) {
+void Hello ::receive_impl(int from, int sender_phase, int direction) {
 
   // Have this chare object say hello to the user.
   CkPrintf("Element  %d (phase %d) on processor %d received from %d (p=%d) in direction %d.\n",
@@ -35,15 +35,7 @@ void Hello ::receive(int from, int sender_phase, int direction) {
   CkAssert(sender_phase == this->current_p);
   assert(sender_phase == this->current_p);
 
-  this->n_received++;
-  // Report to the Main chare object that this chare object
-  //   has completed its task.
-  if(this->n_received >= this->neighbors){
-	thisProxy[thisIndex].new_phase();//only myself.
-  }
 }
-
-
 
 void Hello ::new_phase() {
   this->current_p++;

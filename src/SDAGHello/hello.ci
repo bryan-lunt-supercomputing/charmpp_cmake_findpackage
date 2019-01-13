@@ -2,8 +2,18 @@ module hello {
 
   array [1D] Hello {
     entry Hello(int in_size, int in_phases);
-    entry void receive(int from, int sender_phase, int direction);
+    entry void receive_impl(int from, int sender_phase, int direction);
 	entry void new_phase();
+	entry void receive(int from, int sender_phase, int direction){
+		serial {
+				//What if I could receive in parallel? How do I express that?.
+				//Maybe only the synchronization needs to be atomic.
+				receive_impl(from,sender_phase,direction);
+			if(++n_received == neighbors){
+				new_phase();
+			}
+		}
+	};
   };
 
 };
