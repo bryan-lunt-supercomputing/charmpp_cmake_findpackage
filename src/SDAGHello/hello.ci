@@ -1,0 +1,9 @@
+module hello {
+
+  array [1D] Hello {
+    entry Hello(int in_size, int in_phases);
+    entry void receive(int from, int sender_phase, int direction);
+	entry void new_phase();
+  };
+
+};
