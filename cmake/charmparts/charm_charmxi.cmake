@@ -20,6 +20,9 @@ if(CHARMXI_COMPILER)
 		FULL_DOCS  "List of source files that the charm module compiler should interpret."
 	)
 
+	function(add_charm_module module_name)
+	endfunction()
+
 	function(set_charm_target target_name)
 		set(options SEARCH STANDALONE NOMAIN) #Tells if we want to search for .ci files in the basic sources list
 		set(oneValueArgs TRACEMODE) #TODO: actually look at charmc to figure out how to properly build traces
