@@ -17,6 +17,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_compiler.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_libraries.cmake")
 
 include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_charmxi.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_charmxi_deprecated.cmake")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Charm
