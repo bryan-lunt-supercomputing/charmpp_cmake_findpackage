@@ -23,10 +23,33 @@ if(CHARMXI_COMPILER)
 		FULL_DOCS  "List of source files that the charm module compiler should interpret."
 	)
 
+	function(create_modinit_src modinit_src_varname )
+		set(options SEARCH STANDALONE NOMAIN) #Tells if we want to search for .ci files in the basic sources list
+		set(oneValueArgs TRACEMODE) #TODO: actually look at charmc to figure out how to properly build traces
+		set(multiValueArgs CHARM_SOURCES CHARM_MODULES LINK_MODULES )
+		cmake_parse_arguments(CREATE_MODINIT_SRC "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+		set(my_mi_sourcecode "")
+		foreach(one_dependency_module ${CREATE_MODINIT_SRC_LINK_MODULES})
+			set(my_mi_sourcecode "${my_mi_sourcecode} extern void _register${one_dependency_module}(void); ")
+		endforeach()
+
+
+		set(my_mi_sourcecode "${my_mi_sourcecode}  void _registerExternalModules(char **argv) {  (void)argv; ")
+		foreach(one_dependency_module ${CREATE_MODINIT_SRC_LINK_MODULES})
+			set(my_mi_sourcecode "${my_mi_sourcecode} _register${one_dependency_module}(); ")
+		endforeach()
+		set(my_mi_sourcecode "${my_mi_sourcecode} } " )
+
+		set(my_mi_sourcecode "${my_mi_sourcecode}  void _createTraces(char **argv) { (void)argv; } ")
+		set(${modinit_src_varname} "${my_mi_sourcecode}" PARENT_SCOPE)
+	endfunction()
+
+
 	function(add_charm_module module_name)
 		set(options SEARCH STANDALONE NOMAIN) #Tells if we want to search for .ci files in the basic sources list
 		set(oneValueArgs TRACEMODE) #TODO: actually look at charmc to figure out how to properly build traces
-		set(multiValueArgs CHARM_SOURCES CHARM_MODULES )
+		set(multiValueArgs CHARM_SOURCES CHARM_MODULES LINK_MODULES )
 		cmake_parse_arguments(ADD_CHARM_MODULE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
 		add_library(${module_name} INTERFACE)
@@ -63,6 +86,7 @@ if(CHARMXI_COMPILER)
 			)
 			#add_custom_target()
 
+			create_modinit_src(tmp_modinit_sourcecode LINK_MODULES ${ADD_CHARM_MODULE_LINK_MODULES})
 
 			set(mod_init_src "${MODULE_GENPATH}/${SINGLE_CHARM_DEFAULT_OUTPUT}_modinit.C")
 			target_sources(${module_name} INTERFACE ${mod_init_src})
@@ -70,10 +94,15 @@ if(CHARMXI_COMPILER)
 				PRE_BUILD
 				OUTPUT "${mod_init_src}"
 				#COMMAND ${CMAKE_COMMAND} -E make_directory "${MODULE_GENPATH}"
-				COMMAND echo "void _registerExternalModules(char **argv) { (void)argv; } void _createTraces(char **argv) {(void)argv;}" >> ${mod_init_src}
+				COMMAND echo "${tmp_modinit_sourcecode}" >> ${mod_init_src}
 				WORKING_DIRECTORY ${MODULE_GENPATH}
 				VERBATIM
 			)
+		endforeach()
+
+		foreach(one_linked_module ${ADD_CHARM_MODULE_LINK_MODULES})
+			#TODO: Need to process modules dependencies.
+			target_link_libraries(${module_name} INTERFACE "module${one_linked_module}")
 		endforeach()
 
 		target_include_directories(${module_name} INTERFACE ${MPI_CXX_INCLUDE_PATH})

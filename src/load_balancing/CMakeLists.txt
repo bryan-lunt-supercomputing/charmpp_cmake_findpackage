@@ -31,7 +31,7 @@ endif()
 #The mainchar has to have its .C directly as executable sources or it doesn't link right.
 #WTF?
 
-add_charm_module(lbhellomodule "hello.ci")
+add_charm_module(lbhellomodule "hello.ci" LINK_MODULES "CommonLBs")
 target_link_libraries(lbhellomodule INTERFACE charm_all)
 add_executable(lbhello "hello.C")
 target_link_libraries(lbhello lbhellomodule)
