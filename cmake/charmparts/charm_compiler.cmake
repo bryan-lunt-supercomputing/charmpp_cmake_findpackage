@@ -51,5 +51,6 @@ if(CHARM_COMPILER)
 	endforeach()
 	unset(charmc_all_variables_list)
 	unset(charmc_all_variables)
+	set(CHARM_CXX_INCLUDE_PATH ${CHARMINC})
 	#link_directories(${target_name} ${CHARMLIB} ${CHARMLIBSO}) #Don't like that this will make everyting have that globally.
 endif(CHARM_COMPILER)

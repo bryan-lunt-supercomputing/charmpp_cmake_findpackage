@@ -13,6 +13,9 @@ file(GLOB possible_charm_installations ${possible_charm_installations})
 
 include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_compiler.cmake")
 
+#once the compiler is found, we can find the libraries and stuff
+include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_libraries.cmake")
+
 include("${CMAKE_CURRENT_LIST_DIR}/charmparts/charm_charmxi.cmake")
 
 include(FindPackageHandleStandardArgs)
