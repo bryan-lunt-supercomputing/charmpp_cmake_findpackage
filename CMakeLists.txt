@@ -42,6 +42,8 @@ endif()
 
 add_subdirectory("src/hello")
 
+add_subdirectory("src/load_balancing")
+
 add_subdirectory("src/ArrayHelloWorld")
 
 add_subdirectory("src/BroadcastHelloWorld")
